@@ -1,0 +1,1 @@
+double RandomDouble(double min, double max);

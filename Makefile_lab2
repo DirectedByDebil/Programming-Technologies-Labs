@@ -1,0 +1,44 @@
+CPP=g++
+CPP_FLAGS=-c -Wall -O2 -march=native -std=c++17
+
+#Linker flags
+LDFLAGS = -lm 
+
+SOURCES=main.cpp \
+		core/labs/laba2.cpp \
+		core/algorithms/vectorExtensions.cpp
+
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=laba_2
+
+all: $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) 
+	$(CPP) $(LDFLAGS) $(OBJECTS) -o $@
+
+main.o: main.cpp
+	$(CPP) $(CPP_FLAGS) main.cpp -o main.o
+
+.cpp.o:
+	$(CPP) $(CPP_FLAGS) $< -o $@ 
+
+clean:
+	rm -rf $(OBJECTS) $(EXECUTABLE)
+
+
+debug: CPP_FLAGS = -c -Wall -O0 -g
+debug: clean all
+
+fast: CPP_FLAGS = -c -Wall -O3 -march=native -flto
+fast: clean all
+
+run-debug: debug
+	./$(EXECUTABLE)
+
+run-release: all
+	./$(EXECUTABLE)
+
+run-fast: fast
+	./$(EXECUTABLE)
+
+.PHONY: all clean debug fast run-debug run-release run-fast

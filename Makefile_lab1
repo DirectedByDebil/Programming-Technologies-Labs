@@ -1,0 +1,41 @@
+CC=gcc
+CFLAGS=-c -Wall -O2 -march=native
+#Linker flags
+LDFLAGS = -lm 
+SOURCES=main.c \
+		core/utils/inputParams.c \
+		core/utils/ioUtils.c \
+		core/matrix/matrix.c \
+		core/utils/math.c \
+		core/labs/laba1.c
+OBJECTS=$(SOURCES:.c=.o)
+EXECUTABLE=laba
+
+all: $(SOURCES) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) 
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.c.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	rm -rf $(OBJECTS) $(EXECUTABLE)
+
+
+debug: CFLAGS = -c -Wall -O0 -g
+debug: clean all
+
+fast: CFLAGS = -c -Wall -O3 -march=native -flto
+fast: clean all
+
+run-debug: debug
+	./$(EXECUTABLE)
+
+run-release: all
+	./$(EXECUTABLE)
+
+run-fast: fast
+	./$(EXECUTABLE)
+
+.PHONY: all clean debug fast run-debug run-release run-fast
