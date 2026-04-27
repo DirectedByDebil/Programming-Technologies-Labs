@@ -6,7 +6,8 @@ LDFLAGS = -lm
 
 SOURCES=main.cpp \
 		core/labs/laba2.cpp \
-		core/algorithms/vectorExtensions.cpp
+		core/algorithms/vectorExtensions.cpp \
+		core/utils/mathUtils.cpp
 
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=laba_2

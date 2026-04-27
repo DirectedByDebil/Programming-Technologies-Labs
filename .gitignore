@@ -9,6 +9,10 @@
 *.log
 laba_*
 *.txt
+*.csv
+*.venv
+*.png
+*.pyc
 
 # Precompiled Headers
 *.gch
