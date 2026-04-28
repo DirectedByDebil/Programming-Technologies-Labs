@@ -1,7 +1,7 @@
 import sys
 import pandas as pd
 import plot_utils as pu
-
+import algorithms_anylysis as aa
 
 def get_plot_data(df: pd.DataFrame):
     
@@ -39,7 +39,7 @@ def get_plot_data(df: pd.DataFrame):
 
         plot_data.append(data)
 
-    return plot_data, sizes
+    return plot_data, sizes, algorithms
 
 def create_comparison_plots(plot_data: list, sizes: list, case_name: str, excluded: list = None):
     
@@ -140,7 +140,7 @@ else:
 
     #todo check if file exists
 
-    plot_data, sizes = get_plot_data(df)
+    plot_data, sizes, algorithms = get_plot_data(df)
     view_plot_data(plot_data)
 
     excluded=['Bubble', 'Insert']
@@ -148,4 +148,8 @@ else:
     create_comparison_plots(plot_data, sizes, 'best', excluded=excluded)
     create_comparison_plots(plot_data, sizes, 'worst', excluded=excluded)
     create_comparison_plots(plot_data, sizes, 'average', excluded=excluded)
+
+    for alg in algorithms:
+        #aa.calculate_complexity(df, alg)
+        aa.calculate_complexity_power_law(df, alg)
     
