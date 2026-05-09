@@ -110,7 +110,7 @@ namespace extensions
 
 
     template <typename T>
-    std::tuple<std::vector<T>, double> VectorExtensions::sort (const std::vector<T>& orig, const typename VectorExtensions::Sortings sorting)
+    std::tuple<std::vector<T>, double> VectorExtensions::sort (const std::vector<T>& orig, const typename VectorExtensions::Sortings sorting, const int radixBits)
     {
         std::vector<T> vec(orig);
         std::vector<int> vec_int = VectorExtensions::toType<T,int>(vec);
@@ -157,7 +157,7 @@ namespace extensions
                 
             case so::RadixMSD:
                 start = std::chrono::high_resolution_clock::now();
-                vec_radix = VectorExtensions::sortRadixMSD(vec_int);
+                vec_radix = VectorExtensions::sortRadixMSD(vec_int, radixBits);
                 end = std::chrono::high_resolution_clock::now();
                 
                 vec = VectorExtensions::toType<int,T>(vec_radix);
@@ -165,7 +165,7 @@ namespace extensions
                 
             case so::RadixLSD:
                 start = std::chrono::high_resolution_clock::now();
-                vec_radix = VectorExtensions::sortRadixLSD(vec_int);
+                vec_radix = VectorExtensions::sortRadixLSD(vec_int, radixBits);
                 end = std::chrono::high_resolution_clock::now();
                 
                 vec = VectorExtensions::toType<int,T>(vec_radix);
@@ -314,15 +314,14 @@ namespace extensions
     //! Radix sort works correctly only with integer types (int, unsigned, etc.)
     //! For floating-point types, behavior is undefined.
     template <typename T>
-    std::vector<T> VectorExtensions::sortRadixMSD (std::vector<T> vector)
+    std::vector<T> VectorExtensions::sortRadixMSD (std::vector<T> vector, const int BITS)
     {
         if (vector.empty()) return vector;
         int length = (int)vector.size();
 
-        constexpr int BITS = 8;
-        constexpr int RADIX = 1 << BITS;
-        constexpr int MASK = RADIX - 1;
-        constexpr int PASSES = sizeof(T);
+        const int RADIX = 1 << BITS;
+        const int MASK = RADIX - 1;
+        const int PASSES = sizeof(T);
         
         std::function<void(std::vector<T>&, int, int, int)> msdRadix;
         msdRadix = [&](std::vector<T>& arr, int left, int right, int pass)
@@ -369,15 +368,14 @@ namespace extensions
     }
     
     template <typename T>
-    std::vector<T> VectorExtensions::sortRadixLSD (std::vector<T> vector)
+    std::vector<T> VectorExtensions::sortRadixLSD (std::vector<T> vector, const int BITS)
     {
         if (vector.empty()) return vector;
         int length = (int)vector.size();
 
-        constexpr int BITS = 8;
-        constexpr int RADIX = 1 << BITS;     // 256
-        constexpr int MASK = RADIX - 1;
-        constexpr int PASSES = sizeof(T);    // 4 for int32_t
+        const int RADIX = 1 << BITS;     // 256
+        const int MASK = RADIX - 1;
+        const int PASSES = sizeof(T);    // 4 for int32_t
         
         std::vector<T> output(length);
         std::vector<int> count(RADIX); //count values in cell
@@ -426,18 +424,18 @@ namespace extensions
 
     template std::vector<int> VectorExtensions::generateVector<int>(int, VectorExtensions::SortCase);
     template void VectorExtensions::printVector<int>(const std::vector<int>&);
-    template std::tuple<std::vector<int>, double> VectorExtensions::sort<int>(const std::vector<int>&, VectorExtensions::Sortings);
+    template std::tuple<std::vector<int>, double> VectorExtensions::sort<int>(const std::vector<int>&, VectorExtensions::Sortings, const int);
     template std::vector<int> VectorExtensions::sortBubble<int>(std::vector<int>);
     template std::vector<int> VectorExtensions::sortInsert<int>(std::vector<int>);
     template std::vector<int> VectorExtensions::sortShell<int>(std::vector<int>);
     template std::vector<int> VectorExtensions::sortQuickRecursive<int>(std::vector<int>);
     template std::vector<int> VectorExtensions::sortQuickIterative<int>(std::vector<int>);
-    template std::vector<int> VectorExtensions::sortRadixMSD<int>(std::vector<int>);
-    template std::vector<int> VectorExtensions::sortRadixLSD<int>(std::vector<int>);
+    template std::vector<int> VectorExtensions::sortRadixMSD<int>(std::vector<int>, const int);
+    template std::vector<int> VectorExtensions::sortRadixLSD<int>(std::vector<int>, const int);
 
     template std::vector<double> VectorExtensions::generateVector<double>(int, VectorExtensions::SortCase);
     template void VectorExtensions::printVector<double>(const std::vector<double>&);
-    template std::tuple<std::vector<double>, double> VectorExtensions::sort<double>(const std::vector<double>&, VectorExtensions::Sortings);
+    template std::tuple<std::vector<double>, double> VectorExtensions::sort<double>(const std::vector<double>&, VectorExtensions::Sortings, const int);
     template std::vector<double> VectorExtensions::sortBubble<double>(std::vector<double>);
     template std::vector<double> VectorExtensions::sortInsert<double>(std::vector<double>);
     template std::vector<double> VectorExtensions::sortShell<double>(std::vector<double>);

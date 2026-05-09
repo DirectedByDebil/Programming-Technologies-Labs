@@ -4,7 +4,6 @@ import plot_utils as pu
 import algorithms_anylysis as aa
 
 def get_plot_data(df: pd.DataFrame):
-    
     algorithms = set(df['algorithm'])
     sizes = sorted(set(df['size']))
 
@@ -41,13 +40,13 @@ def get_plot_data(df: pd.DataFrame):
 
     return plot_data, sizes, algorithms
 
-def create_comparison_plots(plot_data: list, sizes: list, case_name: str, excluded: list = None):
+def create_comparison_plots(plot_data: list, sizes: list, case_name: str, dir: str, excluded: list = None):
     
     if excluded is None:
         excluded = []
     
     settings = pu.PlotSettings(1, 1)
-    settings.fileName = f'comparison_{case_name}'
+    settings.fileName = f'{dir}/comparison_{case_name}'
     settings.fileIndex = 1
     settings.suptitle = f'Сравнение алгоритмов сортировки ({case_name} случай)'
     settings.title = f'Сравнение алгоритмов - {case_name}'
@@ -88,11 +87,11 @@ def create_comparison_plots(plot_data: list, sizes: list, case_name: str, exclud
     pu.save_figure(f'{settings.fileName}')
     print(f"✅ График сравнения для {case_name} сохранён (исключены: {excluded})")
 
-def view_plot_data(plot_data: list):
+def view_plot_data(plot_data: list, dir: str):
 
     
     settings = pu.PlotSettings(2, 2)
-    settings.fileName = 'plots'
+    settings.fileName = f'{dir}/plots'
     settings.fileIndex = 1
     settings.suptitle = 'suptitle'
 
@@ -128,6 +127,95 @@ def view_plot_data(plot_data: list):
     pu.save_figure(f'{settings.fileName} ({settings.fileIndex})')
 
 
+def create_radix_comparison_plots(plot_data: list, sizes: list, dir: str):
+    
+    # Собираем radix алгоритмы
+    radix_msd = []
+    radix_lsd = []
+    
+    for data in plot_data:
+        alg = data['algorithm']
+        if 'RadixMSD' in alg:
+            radix_msd.append(data)
+        elif 'RadixLSD' in alg:
+            radix_lsd.append(data)
+    
+    # Сортируем по количеству битов (1, 2, 4, 8)
+    radix_msd.sort(key=lambda x: int(x['algorithm'].split('_')[1]) if '_' in x['algorithm'] else 0)
+    radix_lsd.sort(key=lambda x: int(x['algorithm'].split('_')[1]) if '_' in x['algorithm'] else 0)
+    
+    # Для каждого типа radix создаём 3 графика (best, worst, average)
+    for case_name in ['best', 'worst', 'average']:
+        
+        # График для RadixMSD
+        if radix_msd:
+            settings = pu.PlotSettings(1, 1)
+            settings.fileName = f'{dir}/radix_msd_{case_name}'
+            settings.fileIndex = 1
+            settings.suptitle = f'Radix MSD — сравнение разрядности ({case_name} случай)'
+            settings.title = f'Radix MSD ({case_name})'
+            settings.xLabel = 'Размер массива'
+            settings.yLabel = 'Время (мс)'
+            
+            pu.create_figure(settings.suptitle)
+            
+            algorithms = []
+            all_times = []
+            
+            for data in radix_msd:
+                alg = data['algorithm']
+                bits = alg.split('_')[1] if '_' in alg else 'default'
+                
+                times = []
+                for size_info in data['sizes']:
+                    times.append(size_info[case_name])
+                
+                algorithms.append(f'{bits} bits')
+                all_times.append(times)
+            
+            settings.x = sizes
+            settings.y = all_times
+            settings.labels = algorithms
+            
+            pu.create_plot(settings)
+            pu.save_figure(f'{settings.fileName}')
+            print(f"✅ График Radix MSD ({case_name}) сохранён")
+        
+        # График для RadixLSD
+        if radix_lsd:
+            settings = pu.PlotSettings(1, 1)
+            settings.fileName = f'{dir}/radix_lsd_{case_name}'
+            settings.fileIndex = 1
+            settings.suptitle = f'Radix LSD — сравнение разрядности ({case_name} случай)'
+            settings.title = f'Radix LSD ({case_name})'
+            settings.xLabel = 'Размер массива'
+            settings.yLabel = 'Время (мс)'
+            
+            pu.create_figure(settings.suptitle)
+            
+            algorithms = []
+            all_times = []
+            
+            for data in radix_lsd:
+                alg = data['algorithm']
+                bits = alg.split('_')[1] if '_' in alg else 'default'
+                
+                times = []
+                for size_info in data['sizes']:
+                    times.append(size_info[case_name])
+                
+                algorithms.append(f'{bits} bits')
+                all_times.append(times)
+            
+            settings.x = sizes
+            settings.y = all_times
+            settings.labels = algorithms
+            
+            pu.create_plot(settings)
+            pu.save_figure(f'{settings.fileName}')
+            print(f"✅ График Radix LSD ({case_name}) сохранён")
+
+
 
 args = sys.argv[1:]
 print(f"Arguments passed: {args}")
@@ -135,19 +223,22 @@ print(f"Arguments passed: {args}")
 if len(sys.argv) == 0:
     print("Need pass csv file to create plots!")
 else:
-    file_name = sys.argv[1]
-    df = pd.read_csv(file_name)
+    dir = sys.argv[1]
+    file_name = sys.argv[2]
+    df = pd.read_csv(f'{dir}/{file_name}')
 
     #todo check if file exists
 
     plot_data, sizes, algorithms = get_plot_data(df)
-    view_plot_data(plot_data)
+    view_plot_data(plot_data, dir)
 
     excluded=['Bubble', 'Insert']
 
-    create_comparison_plots(plot_data, sizes, 'best', excluded=excluded)
-    create_comparison_plots(plot_data, sizes, 'worst', excluded=excluded)
-    create_comparison_plots(plot_data, sizes, 'average', excluded=excluded)
+    create_comparison_plots(plot_data, sizes, 'best', dir, excluded=excluded)
+    create_comparison_plots(plot_data, sizes, 'worst', dir, excluded=excluded)
+    create_comparison_plots(plot_data, sizes, 'average', dir, excluded=excluded)
+
+    create_radix_comparison_plots(plot_data, sizes, dir)
 
     for alg in algorithms:
         #aa.calculate_complexity(df, alg)

@@ -32,7 +32,7 @@ plt.rcParams['font.family'] = 'serif'
 
 def get_color(i: int = 0):
 
-    colors = ['g', 'r', 'b', 'c', 'm', 'y', 'k', 'w']
+    colors = ['g', 'r', 'b', 'c', 'm', 'y', 'k']
     linestyles = ['-', '--', '-.', ':']
 
     color = colors[i % len(colors)]

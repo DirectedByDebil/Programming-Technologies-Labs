@@ -39,7 +39,7 @@ namespace extensions
         static std::ostream& putToStream(std::ostream& os, const std::vector<T>& v);
 
         template <typename T>
-        static std::tuple<std::vector<T>, double> sort (const std::vector<T>&, const Sortings sorting = Sortings::QuickRecursive);
+        static std::tuple<std::vector<T>, double> sort (const std::vector<T>&, const Sortings sorting = Sortings::QuickRecursive, const int radixBits = 8);
 
         template <typename T>
         static std::vector<T> sortBubble (std::vector<T>);
@@ -59,10 +59,10 @@ namespace extensions
         //! Radix sort works correctly only with integer types (int, unsigned, etc.)
         //! For floating-point types, behavior is undefined.
         template <typename T>
-        static std::vector<T> sortRadixMSD (std::vector<T>);
+        static std::vector<T> sortRadixMSD (std::vector<T>, const int BITS = 8);
 
         template <typename T>
-        static std::vector<T> sortRadixLSD (std::vector<T>);
+        static std::vector<T> sortRadixLSD (std::vector<T>, const int BITS = 8);
         
     private:        
         template <typename T, typename Y>
