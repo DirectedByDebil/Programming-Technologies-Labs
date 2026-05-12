@@ -78,7 +78,7 @@ def calculate_complexity(df: pd.DataFrame, algorithm: str, size_column: str = 's
     
     # Вывод результатов
     print(f"\n{'='*60}")
-    print(f"📊 Анализ сложности алгоритма: {algorithm}")
+    print(f"Анализ сложности алгоритма: {algorithm}")
     print(f"{'='*60}")
     print(f"{'Сложность':<12} | {'Ср. коэфф.':<12} | {'Отклонение':<12} | {'Стабильность':<12}")
     print(f"{'-'*60}")
@@ -86,11 +86,11 @@ def calculate_complexity(df: pd.DataFrame, algorithm: str, size_column: str = 's
     for complexity in ['O(1)', 'O(n)', 'O(n log n)', 'O(n²)']:
         coeff = results[complexity]['ratio_mean']
         std = results[complexity]['ratio_std']
-        stability = '✅' if complexity == best_complexity else ' '
+        stability = '' if complexity == best_complexity else ' '
         print(f"{complexity:<12} | {coeff:<12.4f} | {std:<12.4f} | {stability:<12}")
     
     print(f"{'-'*60}")
-    print(f"🎯 Наиболее вероятная сложность: {best_complexity}")
+    print(f"Наиболее вероятная сложность: {best_complexity}")
     print(f"   (наименьшее относительное отклонение: {results[best_complexity]['score']:.4f})")
     
     # Дополнительная аналитика
@@ -107,7 +107,7 @@ def calculate_complexity(df: pd.DataFrame, algorithm: str, size_column: str = 's
             'O(n²)': size_ratio ** 2
         }
         
-        print(f"\n📈 Практическая проверка:")
+        print(f"\nПрактическая проверка:")
         print(f"   Рост размера: {sizes[0]} → {sizes[-1]} (в {size_ratio:.1f} раз)")
         print(f"   Рост времени: {times[0]:.2f} → {times[-1]:.2f} мс (в {ratio_2x:.1f} раз)")
         
@@ -141,11 +141,11 @@ def calculate_complexity_power_law(df: pd.DataFrame, algorithm: str):
     slope, intercept, r_value, p_value, std_err = stats.linregress(log_sizes, log_times)
     
     print(f"\n{'='*60}")
-    print(f"📈 Степенная аппроксимация для алгоритма: {algorithm}")
+    print(f" Степенная аппроксимация для алгоритма: {algorithm}")
     print(f"{'='*60}")
     print(f"   T(n) ≈ {np.exp(intercept):.4f} * n^{slope:.4f}")
     print(f"   Коэффициент детерминации R²: {r_value**2:.4f}")
-    print(f"\n📌 Интерпретация:")
+    print(f"\nИнтерпретация:")
     
     if slope < 0.5:
         print(f"   ~O(1) или O(log n) — константная или логарифмическая")

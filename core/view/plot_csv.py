@@ -55,14 +55,12 @@ def create_comparison_plots(plot_data: list, sizes: list, case_name: str, dir: s
     
     pu.create_figure(settings.suptitle)
     
-    # Собираем все данные в массивы (фильтруем excluded)
     algorithms = []
     all_times = []
     
     for data in plot_data:
         alg = data['algorithm']
         
-        # Пропускаем исключённые алгоритмы
         if alg in excluded:
             continue
             
@@ -73,19 +71,17 @@ def create_comparison_plots(plot_data: list, sizes: list, case_name: str, dir: s
         algorithms.append(alg)
         all_times.append(times)
     
-    # Если все алгоритмы исключены — не рисуем
     if not algorithms:
-        print(f"⚠️ Все алгоритмы исключены для {case_name}, график не создан")
+        print(f"Все алгоритмы исключены для {case_name}, график не создан")
         return
     
-    # Один вызов create_plot со всеми данными
     settings.x = sizes
     settings.y = all_times
     settings.labels = algorithms
     
     pu.create_plot(settings)
     pu.save_figure(f'{settings.fileName}')
-    print(f"✅ График сравнения для {case_name} сохранён (исключены: {excluded})")
+    print(f"График сравнения для {case_name} сохранён (исключены: {excluded})")
 
 def view_plot_data(plot_data: list, dir: str):
 
@@ -179,7 +175,7 @@ def create_radix_comparison_plots(plot_data: list, sizes: list, dir: str):
             
             pu.create_plot(settings)
             pu.save_figure(f'{settings.fileName}')
-            print(f"✅ График Radix MSD ({case_name}) сохранён")
+            print(f"График Radix MSD ({case_name}) сохранён")
         
         # График для RadixLSD
         if radix_lsd:
@@ -213,7 +209,7 @@ def create_radix_comparison_plots(plot_data: list, sizes: list, dir: str):
             
             pu.create_plot(settings)
             pu.save_figure(f'{settings.fileName}')
-            print(f"✅ График Radix LSD ({case_name}) сохранён")
+            print(f"График Radix LSD ({case_name}) сохранён")
 
 
 
@@ -225,8 +221,13 @@ if len(sys.argv) == 0:
 else:
     dir = sys.argv[1]
     file_name = sys.argv[2]
-    df = pd.read_csv(f'{dir}/{file_name}')
 
+    dir = dir.replace('\\', '/')
+    file_name = file_name.replace('\\', '/')
+
+    path = f'{dir}/{file_name}'
+    print(path)
+    df = pd.read_csv(path)
     #todo check if file exists
 
     plot_data, sizes, algorithms = get_plot_data(df)
@@ -240,7 +241,7 @@ else:
 
     create_radix_comparison_plots(plot_data, sizes, dir)
 
-    for alg in algorithms:
+    #for alg in algorithms:
         #aa.calculate_complexity(df, alg)
-        aa.calculate_complexity_power_law(df, alg)
+        #aa.calculate_complexity_power_law(df, alg)
     

@@ -4,10 +4,7 @@ CPP_FLAGS=-c -Wall -O2 -march=native -std=c++17
 #Linker flags
 LDFLAGS = -lm 
 
-SOURCES=main.cpp \
-		core\labs\laba2.cpp \
-		core\algorithms\vectorExtensions.cpp \
-		core\utils\mathUtils.cpp
+SOURCES=main.cpp core\labs\laba2.cpp core\algorithms\vectorExtensions.cpp core\utils\mathUtils.cpp
 
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=laba_2

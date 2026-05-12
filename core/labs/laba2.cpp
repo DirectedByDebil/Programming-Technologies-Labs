@@ -62,6 +62,7 @@ int cpp_labs::startLab2 (int argc, char* argv[])
     std::vector<int> sizes = getSizes(maxOrder);
     for (const int size: sizes)
     {
+        std::cout << "Counting for size: " << size << "...\n";
         std::ostringstream sizeStream;
         //sizeStream << std::fixed << std::setprecision(10);
         sizeStream << std::fixed;
@@ -134,6 +135,7 @@ int cpp_labs::startLab2 (int argc, char* argv[])
             sizeStream << "\n";
         }
 
+        std::cout << "Writing results...\n\n";
         writeResults(directory, "alg_" + std::to_string(size) +".txt", sizeStream.str());
     }
 
