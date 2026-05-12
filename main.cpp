@@ -2,5 +2,5 @@
 
 int main (int argc, char* argv[]) 
 {
-    return cpp_labs::startLab2(argc, argv);
+    return cpp_labs::startLab3(argc, argv);
 }

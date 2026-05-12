@@ -1,5 +1,6 @@
 #include <random>
 #include <type_traits> 
+#include <random>
 
 #include "mathUtils.h"
 
@@ -17,6 +18,33 @@ T math_utils::randomNumber(T min, T max)
         return dist(gen);
     }
 }
+
+
+double math_utils::randomPoint(const double min, const double max, std::mt19937* gen)
+{
+    static std::mt19937 defaultGen(std::random_device{}());
+    if (gen == nullptr)
+    {
+        gen = &defaultGen;
+    }
+    
+    std::uniform_real_distribution<double> dis(min, max);
+    return dis(*gen);
+}
+
+
+double math_utils::randomNormalDistribution(const double min, const double max, std::mt19937* gen)
+{
+    static std::mt19937 defaultGen(std::random_device{}());
+    if (gen == nullptr)
+    {
+        gen = &defaultGen;
+    }
+    
+    std::normal_distribution<double> norm(min, max);
+    return norm(*gen);
+}
+
 
 template int math_utils::randomNumber<int>(int, int);
 template double math_utils::randomNumber<double>(double, double);
