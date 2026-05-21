@@ -228,7 +228,6 @@ else:
     path = f'{dir}/{file_name}'
     print(path)
     df = pd.read_csv(path)
-    #todo check if file exists
 
     plot_data, sizes, algorithms = get_plot_data(df)
     view_plot_data(plot_data, dir)

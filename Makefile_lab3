@@ -4,7 +4,11 @@ CPP_FLAGS=-c -Wall -O2 -march=native -std=c++17
 #Linker flags
 LDFLAGS = -lm 
 
-SOURCES=main.cpp core\labs\laba3.cpp core\utils\mathUtils.cpp core\math\optimization.cpp core/utils/fileUtils.cpp
+SOURCES=main.cpp \
+		core/labs/laba3.cpp \
+		core/utils/mathUtils.cpp \
+		core/utils/fileUtils.cpp \
+		core/math/optimization.cpp 
 
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=laba_3
